@@ -1,0 +1,282 @@
+---
+title: "Project 2"
+author: "Ryan Nguyen, Rod Vasquez, Kimaya Rane"
+date: "12/7/2017"
+output: 
+  html_document:
+    self_contained: no
+---
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(echo= TRUE)
+op=options(gvis.plot.tag='chart')
+```
+
+
+```{r}
+library(readxl)
+```
+
+##Introduction
+###Over the past decade, the scientific community has shown a willingness to support candidates with a science background. Our analysis and data sets dive into the trends of scientists' voting patterns in the political environment. Sub-setting the data into various groups including different facets of science-intensive jobs, we measured their behavior and willingness to donate to a candidate across different years for house, senate, and presidential elections by different cycles. This data can be used for political candidates trying to campaign to a targeted audience of engineering/ other heavy scientific jobs and narrow their efforts in on those who would be most likely to donate to their campaign. 
+
+##1. Please study differences in donations across different states among people with science-intensive jobs for Presidential elections across the three election cycles.
+ 
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(googleVis)
+```
+
+```{r}
+science_federal_giving<-read.csv("science_federal_giving.csv", header=TRUE, sep=",")
+```
+
+```{r}
+SciFedGivingMod <- science_federal_giving[,-c(1:16,18,19,21,22,24,26:31)]
+```
+
+```{r}
+Cycle1 <- subset(SciFedGivingMod, cycle == "2008")
+```
+
+```{r}
+Cycle1[Cycle1 < 0] <-NA
+Cycle1[Cycle1==""] <-NA
+Cycle1 <- na.omit(Cycle1)
+```
+
+```{r}
+Cycle1=Cycle1%>%group_by(state)%>%summarize(Donation.Mean=mean(X2016_dollars))
+Cycle1$state[is.na(Cycle1$state)] <- ""
+MeanDonations08 <- Cycle1 %>% filter(!state %in% c("ZZ", "AA", "","QC", "PR","AE","AP","AS","GU","VI", "DC"))
+MeanDonations08
+```
+
+```{r results='asis'}
+MeanDonations08chart1 <- gvisGeoChart(MeanDonations08, "state","Donation.Mean",
+options=list(region="US", displayMode="regions", resolution="provinces",
+width=600, height=400))
+MeanDonations08chart1
+
+
+```
+
+###Looking deeper into the data for 2008, the mean state donations ranged from $420.82 to $931.00. This mean range was the largest range and had the largest values as a whole.  There was a trend of individuals in science intensive jobs who were willing to contribute larger donations to be located in the West, Mid-West, and South, specifically Texas area.  The state with the largest contributors on average for this year was Indiana with a high of $931.00.  This contrasted with the other years in that there was an increased density of high donation means in the west whereas the other years did not exhibit the same trend.  Furthermore, the state with the highest average donation was Indiana while Oklahoma, rose as the clear winner for 2012 and 2016 with highest donation mean. 
+
+```{r}
+Cycle2 <- subset(SciFedGivingMod, cycle == "2012")
+```
+
+```{r}
+Cycle2[Cycle2 < 0] <-NA
+Cycle2[Cycle2==""] <-NA
+Cycle2 <- na.omit(Cycle2)
+```
+
+```{r}
+Cycle2=Cycle2%>%group_by(state)%>%summarize(Donation.Mean=mean(X2016_dollars))
+Cycle2$state[is.na(Cycle2$state)] <- ""
+MeanDonations08 <- Cycle2 %>% filter(!state %in% c("ZZ", "AA", "","QC", "PR","AE","AP","AS","GU","VI", "DC"))
+MeanDonations08
+```
+
+```{r results='asis'}
+MeanDonations08Chart2 <- gvisGeoChart(MeanDonations08, "state","Donation.Mean",
+options=list(region="US", displayMode="regions", resolution="provinces",
+width=600, height=400))
+MeanDonations08Chart2
+```
+
+###For the 2012 year, the range in donation means are $376.32 to $877.73, already we see a drop in mean donation amounts.  For this cycle the majority of high donation means being centralized in the Midwest and South, not the west as seen in the previous data set.  It was interesting to note that in 2008 Indiana was the highest donation mean contributor for individuals in science intensive jobs but know ranks on the bottom half of the scale.  The emerging leader in mean donations is Oklahoma which is located toward the bottom half of the country near Texas.
+
+```{r}
+Cycle3 <- subset(SciFedGivingMod, cycle == "2016")
+```
+
+```{r}
+Cycle3[Cycle3 < 0] <-NA
+Cycle3[Cycle3==""] <-NA
+Cycle3 <- na.omit(Cycle3)
+```
+
+```{r}
+Cycle3=Cycle3%>%group_by(state)%>%summarize(Donation.Mean=mean(X2016_dollars))
+Cycle3$state[is.na(Cycle3$state)] <- ""
+MeanDonations08 <- Cycle3 %>% filter(!state %in% c("ZZ", "AA", "","QC", "PR","AE","AP","AS","GU","VI", "DC"))
+MeanDonations08
+```
+
+```{r results='asis'}
+MeanDonations08Chart3 <- gvisGeoChart(MeanDonations08, "state","Donation.Mean",
+options=list(region="US", displayMode="regions", resolution="provinces",
+width=600, height=400))
+MeanDonations08Chart3
+```
+
+###2016 presented the lowest mean donation amount of $62.64 in Vermont. The highest donation mean was $402.43 in Oklahoma, the same as the 2012 cycle.  This data set also followed the same trend of being concentrated in the mainly in the South and a little in the Mid-West, Kentucky specifically. We can attest the lower values here most likely to the lack of data values with potential to be larger being that this cycle included only data from 2016 rather than a range of years as seen in cycle 1 and cycle 2. 
+
+##2. Are there differences in donation patterns across the three types of classifications - Engineer/Math-Stat/Scientist - across different years for house, senate, and presidential elections, across different years.
+
+###Subset for Engineering 
+######(The following steps taken to isolate datasets are replicated below for each occuapation type)
+
+```{r}
+Engineering <- science_federal_giving[,-c(1,2,4:20,22,24,26:31)]
+```
+
+```{r}
+EngineerIsolation <- subset(Engineering, classification == "Engineer")
+```
+
+```{r}
+names(EngineerIsolation)[1]="Party"
+names(EngineerIsolation)[4]="Donation"
+```
+
+```{r}
+Eng08 <- subset(EngineerIsolation, cycle == "2008")
+```
+
+```{r}
+Eng12 <- subset(EngineerIsolation, cycle == "2012")
+```
+
+```{r}
+Eng16 <- subset(EngineerIsolation, cycle == "2016")
+```
+
+###Combining datasets for engineering from cycles 08,12,16 to make a final dataset
+
+```{r}
+EngYears <- rbind(Eng08,Eng12,Eng16)
+```
+
+###Finding mean donations 
+
+```{r}
+EngFinal=EngYears%>%group_by(cycle,Party)%>%summarize(mean =mean(Donation))
+EngFinal <- EngFinal[-c(4,5,9,10,14,15),]
+```
+
+###Plotting mean donation 
+
+```{r}
+EngFinalPlot <- ggplot(data = EngFinal, aes(x=reorder(cycle, mean),y=mean, fill=as.factor(Party))) + geom_bar(stat="identity", alpha=.60) + coord_flip()+ labs(list(title = "Mean Donations from Engineers by Cycle Year and Committee Type", x = "Cycle Year", y = "Mean 2016 dollars"))
+
+
+EngFinalPlot
+
+```
+
+###The graph above is a stacked bar chart based off data from donations by engineering occupations. The graph is stratified by cycle year, and committe type (e.g. House, Presedential, and Senate). This graph shows that in 2008 the total amount of donations from engineers occupation was over $2000. Further, it shows that House and Senate elections both brought in a mean of around $750 each while Presedential had approximately a mean of $550. in 2012 and 2016 the elections the total mean amount of donatins from engineering occupations was just over $1750 and about $750 for 2016. All bars from all three election cycles show that House elections had the highest mean donation from the engineering occupation, the Senate election had the second highest donation mean, and the Presediential had the lowest mean donation.
+
+
+###Math-Stats
+
+```{r}
+MathStats <- science_federal_giving[,-c(1,2,4:20,22,24,26:31)]
+```
+
+```{r}
+MathStatsIsolation <- subset(MathStats, classification == "Math-Stat")
+```
+
+```{r}
+names(MathStatsIsolation)[1]="Party"
+names(MathStatsIsolation)[4]="Donation"
+```
+
+```{r}
+Math08 <- subset(MathStatsIsolation, cycle == "2008")
+```
+
+```{r}
+Math12 <- subset(MathStatsIsolation, cycle == "2012")
+```
+
+```{r}
+Math16 <- subset(MathStatsIsolation, cycle == "2016")
+```
+
+```{r}
+MathYears <- rbind(Math08,Math12,Math16)
+```
+
+```{r}
+MathFinal=MathYears%>%group_by(cycle,Party)%>%summarize(mean =mean(Donation))
+MathFinal <- MathFinal[-c(4,5,9,13,14),]
+```
+
+```{r}
+MathFinalPlot <- ggplot(data = MathFinal, aes(x=reorder(cycle, mean),y=mean, fill=as.factor(Party))) + geom_bar(stat="identity", alpha=.60) + coord_flip()+ labs(list(title = "Mean Donations from Math-Stats Occuations by Cycle Year and Committee Type", x = "Cycle Year", y = "Mean 2016 dollars"))
+
+
+MathFinalPlot
+
+```
+
+###The graph above is stratified the same way as the first graph however it is isolated by the math-stats occupation. This graph shows the same trend for total mean donation for each election year, showing that it is highest for 2008 and lowest for 2016. However, this graph shows a more equal spread of donations per commitee type per year. For the 2008 cycle the mean donations are all about $500-600, for 2012 they are all around $500, and for the 2016 cycle all donatinos are all around $100-200. So, no committee type received vastly more donatinos by the math-stats occupations than another committee type. One thing to note is that the scale for this particular graph is smaller than the others. This is due to a smaller total mean donation across all cycle years for math-stats occupations. The highest total mean which was in the 2008 cycle was above $1500 but below $2000 whereas the other graphs have highest total means that are above $2000. Thus, on average the math-stats occupations donates less then Engineers and Scienctist.
+
+###Science
+```{r}
+Science <- science_federal_giving[,-c(1,2,4:20,22,24,26:31)]
+```
+
+```{r}
+ScienceIsolation <- subset(Science, classification == "Scientist")
+```
+
+```{r}
+names(ScienceIsolation)[1]="Party"
+names(ScienceIsolation)[4]="Donation"
+```
+
+```{r}
+Science08 <- subset(ScienceIsolation, cycle == "2008")
+```
+
+```{r}
+Science12 <- subset(ScienceIsolation, cycle == "2012")
+```
+
+```{r}
+Science16 <- subset(ScienceIsolation, cycle == "2016")
+```
+
+```{r}
+ScienceYears <- rbind(Science08,Science12,Science16)
+```
+
+
+```{r}
+ScienceFinal=ScienceYears%>%group_by(cycle,Party)%>%summarize(mean =mean(Donation))
+ScienceFinal <- ScienceFinal[-c(4,5,9,10,14,15),]
+```
+
+```{r}
+ScienceFinalPlot <- ggplot(data = ScienceFinal, aes(x=reorder(cycle, mean),y=mean, fill=as.factor(Party))) + geom_bar(stat="identity", alpha=.60) + coord_flip()+ labs(list(title = "Mean Donations from Scientists by Cycle Year and Committee Type", x = "Cycle Year", y = "Mean 2016 dollars"))
+
+
+ScienceFinalPlot
+
+```
+
+###Again, the graph above is stratified the same as the first two graphs but is isolated by the scienctist occupation. It also shows the same trend of highest total mean donation in 2008 and lowest in 2016. The highest total mean donation is for the 2008 cycle and is just under $2000 which is in betwen the math-stats occupations and the engineering ocupations. Thus, scientists fill in the middle for mean donatino amount between the three occupation types. This graph also shows that the mean donations for House and Senate elections are higher than Presedential elections. However, the mean donations between House and Senetale elecitons are somewhat even for each cycle year. Seeing the common trends between all three graphs poses a question for further investigation: Why does the presedential election get the smallest mean donation amount? 
+
+
+##Limitations of the Data
+###In analyzing the data, there were a lot of limitaations and edits one should keep in mind.  First was that in question one, we filtered out a lot of donation values.  While tiddying the data we found that there were many negative values which skewed our data and did not provide an accurate depiction of average doantion amounts recieved becuase the data was about $100.00 lower due to the negitive values factoring in.  Additionally, we made it a point to keep any zero amounts as they alluded to any individual who did not support the canidate.  These  zero values are indicative of someone within the intensive science jobs who did not support the a candidate, going against the growing trend of science intensive individuals' growing support in the political environment. What would be interesting to dive deeper would be to look specifically as the individuals who did not donate and see which science discipline were not willing to donate, or look deeper into each party and see who was not willing to donate to them specifically. 
+
+###While analyzing the results of questions number two, it was interesting to note the lower means for the Cycle Year 2016 .  While splitting up and subsetting the data we broke up the donation into ranges of years which had a negative effect on 2016 being that we are still in 2017 thus, cannot draw data from this year and integrate it into our current data sets. This poses a limit to our data because the values are slightly skewed because of less data values to draw from.  As someone interested in furthering this study, it would be interesting to analyze the growth in donation means for the 2016 cycle as ore data comesup that can be integrated in.  Another option could be to splice the data even smaller so that we were not looking at a range of values but instead, year by year analysis. 
+
+##Conclusion
+###Our analysis explored the willingness of individuals with Scientific intensive jobs to donate to political campaign of different sorts and by different states.  Our approach was twofold, first look specifically at states and then to examine specific disciplines as they related to different political elections. 
+
+###Approaching the data specific to states, we saw a trend for the data to be concentrated in the South, Mid-West and West year over year.  The donations were examined by average and we compared the averages of different states to draw out common themes of donations in each state. The largest range was in 2008 with an average donation range per state being $420.82 to $931.73.  This was also the highest average range.  The lowest average range occurred in 2016.  Here, the average donations ranged from $62.64- $402.43 per individual with a science intensive job. 
+
+###Taking the data one step further, we looked into the individuals within the categories of math- stat, engineering and scientific.  Engineers on average were likely to give the highest donation while math stats were the lowest with scientist being somewhere in between.  We broke this up further by political election they were donating to. It seemed that individuals in these field were most likely to either the House or Senate.  Both yielded similar average donations but, presidential campaigns came out as a clear bottom for donations contributed by engineers, math stats, and scientist.  
+
+###This data is an invaluable source for politicians running election campaigns who might be interested in targeting their audience to science intensive individuals. The charts evaluated group behaviors toward supporting different political causes which is helpful in decided to who and where one would achieve the highest donation for their campaign.  The targeted audience for a campaign that can be built by this data would allow a politician to use their time and energy most effectively to gain the most bang for their buck.
+

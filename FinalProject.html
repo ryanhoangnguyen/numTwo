@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Ryan Nguyen, Rod Vasquez, Kimaya Rane" />
+
+
+<title>Project 2</title>
+
+<script src="FinalProject_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="FinalProject_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="FinalProject_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="FinalProject_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="FinalProject_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="FinalProject_files/navigation-1.1/tabsets.js"></script>
+<link href="FinalProject_files/highlightjs-1.1/default.css" rel="stylesheet" />
+<script src="FinalProject_files/highlightjs-1.1/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Project 2</h1>
+<h4 class="author"><em>Ryan Nguyen, Rod Vasquez, Kimaya Rane</em></h4>
+<h4 class="date"><em>12/7/2017</em></h4>
+
+</div>
+
+
+<pre class="r"><code>library(readxl)</code></pre>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<div id="over-the-past-decade-the-scientific-community-has-shown-a-willingness-to-support-candidates-with-a-science-background.-our-analysis-and-data-sets-dive-into-the-trends-of-scientists-voting-patterns-in-the-political-environment.-sub-setting-the-data-into-various-groups-including-different-facets-of-science-intensive-jobs-we-measured-their-behavior-and-willingness-to-donate-to-a-candidate-across-different-years-for-house-senate-and-presidential-elections-by-different-cycles.-this-data-can-be-used-for-political-candidates-trying-to-campaign-to-a-targeted-audience-of-engineering-other-heavy-scientific-jobs-and-narrow-their-efforts-in-on-those-who-would-be-most-likely-to-donate-to-their-campaign." class="section level3">
+<h3>Over the past decade, the scientific community has shown a willingness to support candidates with a science background. Our analysis and data sets dive into the trends of scientists’ voting patterns in the political environment. Sub-setting the data into various groups including different facets of science-intensive jobs, we measured their behavior and willingness to donate to a candidate across different years for house, senate, and presidential elections by different cycles. This data can be used for political candidates trying to campaign to a targeted audience of engineering/ other heavy scientific jobs and narrow their efforts in on those who would be most likely to donate to their campaign.</h3>
+</div>
+</div>
+<div id="please-study-differences-in-donations-across-different-states-among-people-with-science-intensive-jobs-for-presidential-elections-across-the-three-election-cycles." class="section level2">
+<h2>1. Please study differences in donations across different states among people with science-intensive jobs for Presidential elections across the three election cycles.</h2>
+<pre class="r"><code>library(ggplot2)
+library(dplyr)</code></pre>
+<pre><code>## Warning: package &#39;dplyr&#39; was built under R version 3.4.2</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(tidyr)</code></pre>
+<pre><code>## Warning: package &#39;tidyr&#39; was built under R version 3.4.2</code></pre>
+<pre class="r"><code>library(googleVis)</code></pre>
+<pre><code>## Creating a generic function for &#39;toJSON&#39; from package &#39;jsonlite&#39; in package &#39;googleVis&#39;</code></pre>
+<pre><code>## 
+## Welcome to googleVis version 0.6.2
+## 
+## Please read Google&#39;s Terms of Use
+## before you start using the package:
+## https://developers.google.com/terms/
+## 
+## Note, the plot method of googleVis will by default use
+## the standard browser to display its output.
+## 
+## See the googleVis package vignettes for more details,
+## or visit http://github.com/mages/googleVis.
+## 
+## To suppress this message use:
+## suppressPackageStartupMessages(library(googleVis))</code></pre>
+<pre class="r"><code>science_federal_giving&lt;-read.csv(&quot;science_federal_giving.csv&quot;, header=TRUE, sep=&quot;,&quot;)</code></pre>
+<pre class="r"><code>SciFedGivingMod &lt;- science_federal_giving[,-c(1:16,18,19,21,22,24,26:31)]</code></pre>
+<pre class="r"><code>Cycle1 &lt;- subset(SciFedGivingMod, cycle == &quot;2008&quot;)</code></pre>
+<pre class="r"><code>Cycle1[Cycle1 &lt; 0] &lt;-NA</code></pre>
+<pre><code>## Warning in Ops.factor(left, right): &#39;&lt;&#39; not meaningful for factors
+
+## Warning in Ops.factor(left, right): &#39;&lt;&#39; not meaningful for factors</code></pre>
+<pre class="r"><code>Cycle1[Cycle1==&quot;&quot;] &lt;-NA
+Cycle1 &lt;- na.omit(Cycle1)</code></pre>
+<pre class="r"><code>Cycle1=Cycle1%&gt;%group_by(state)%&gt;%summarize(Donation.Mean=mean(X2016_dollars))
+Cycle1$state[is.na(Cycle1$state)] &lt;- &quot;&quot;
+MeanDonations08 &lt;- Cycle1 %&gt;% filter(!state %in% c(&quot;ZZ&quot;, &quot;AA&quot;, &quot;&quot;,&quot;QC&quot;, &quot;PR&quot;,&quot;AE&quot;,&quot;AP&quot;,&quot;AS&quot;,&quot;GU&quot;,&quot;VI&quot;, &quot;DC&quot;))
+MeanDonations08</code></pre>
+<pre><code>## # A tibble: 50 x 2
+##     state Donation.Mean
+##    &lt;fctr&gt;         &lt;dbl&gt;
+##  1     AK      503.4698
+##  2     AL      656.1296
+##  3     AR      618.6256
+##  4     AZ      557.5474
+##  5     CA      612.3972
+##  6     CO      669.8939
+##  7     CT      611.4389
+##  8     DE      509.8458
+##  9     FL      688.2721
+## 10     GA      599.2104
+## # ... with 40 more rows</code></pre>
+<pre class="r"><code>MeanDonations08chart1 &lt;- gvisGeoChart(MeanDonations08, &quot;state&quot;,&quot;Donation.Mean&quot;,
+options=list(region=&quot;US&quot;, displayMode=&quot;regions&quot;, resolution=&quot;provinces&quot;,
+width=600, height=400))
+MeanDonations08chart1</code></pre>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>
+GeoChartID61e7ed99ab3
+</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<style type="text/css">
+body {
+  color: #444444;
+  font-family: Arial,Helvetica,sans-serif;
+  font-size: 75%;
+  }
+  a {
+  color: #4D87C7;
+  text-decoration: none;
+}
+</style>
+</head>
+<body>
+<p><!-- GeoChart generated in R 3.4.1 by googleVis 0.6.2 package --> <!-- Wed Dec 13 17:26:16 2017 --></p>
+<!-- jsHeader -->
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataGeoChartID61e7ed99ab3 () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+"AK",
+503.4697658
+],
+[
+"AL",
+656.1295838
+],
+[
+"AR",
+618.6255857
+],
+[
+"AZ",
+557.5473801
+],
+[
+"CA",
+612.3972296
+],
+[
+"CO",
+669.8939103
+],
+[
+"CT",
+611.4389416
+],
+[
+"DE",
+509.8458246
+],
+[
+"FL",
+688.2720956
+],
+[
+"GA",
+599.2104128
+],
+[
+"HI",
+903.3507372
+],
+[
+"IA",
+582.5244362
+],
+[
+"ID",
+498.886024
+],
+[
+"IL",
+600.1452386
+],
+[
+"IN",
+931.7262346
+],
+[
+"KS",
+553.8588146
+],
+[
+"KY",
+791.4806648
+],
+[
+"LA",
+902.3238
+],
+[
+"MA",
+574.3220847
+],
+[
+"MD",
+601.7822316
+],
+[
+"ME",
+524.7492078
+],
+[
+"MI",
+622.9848485
+],
+[
+"MN",
+535.9704624
+],
+[
+"MO",
+570.2236032
+],
+[
+"MS",
+746.3866852
+],
+[
+"MT",
+524.41372
+],
+[
+"NC",
+495.6152628
+],
+[
+"ND",
+460.1946977
+],
+[
+"NE",
+436.7489714
+],
+[
+"NH",
+735.5166522
+],
+[
+"NJ",
+699.3558511
+],
+[
+"NM",
+617.876977
+],
+[
+"NV",
+869.9155751
+],
+[
+"NY",
+676.2243581
+],
+[
+"OH",
+584.9440791
+],
+[
+"OK",
+890.580356
+],
+[
+"OR",
+492.9768217
+],
+[
+"PA",
+600.8697603
+],
+[
+"RI",
+576.0892241
+],
+[
+"SC",
+576.456016
+],
+[
+"SD",
+825.3846535
+],
+[
+"TN",
+616.6038103
+],
+[
+"TX",
+748.7413516
+],
+[
+"UT",
+752.4172258
+],
+[
+"VA",
+603.4524227
+],
+[
+"VT",
+420.8169512
+],
+[
+"WA",
+632.1242439
+],
+[
+"WI",
+519.1845809
+],
+[
+"WV",
+802.9865
+],
+[
+"WY",
+761.565593
+] 
+];
+data.addColumn('string','state');
+data.addColumn('number','Donation.Mean');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartGeoChartID61e7ed99ab3() {
+var data = gvisDataGeoChartID61e7ed99ab3();
+var options = {};
+options["width"] = 600;
+options["height"] = 400;
+options["region"] = "US";
+options["displayMode"] = "regions";
+options["resolution"] = "provinces";
+
+    var chart = new google.visualization.GeoChart(
+    document.getElementById('GeoChartID61e7ed99ab3')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "geochart";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartGeoChartID61e7ed99ab3);
+})();
+function displayChartGeoChartID61e7ed99ab3() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+<!-- jsChart -->
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartGeoChartID61e7ed99ab3"></script>
+<!-- divChart -->
+<div id="GeoChartID61e7ed99ab3" style="width: 600; height: 400;">
+
+</div>
+<div>
+<span>Data: MeanDonations08 • Chart ID: <a href="Chart_GeoChartID61e7ed99ab3.html">GeoChartID61e7ed99ab3</a> • <a href="https://github.com/mages/googleVis">googleVis-0.6.2</a></span><br /> <!-- htmlFooter --> <span> R version 3.4.1 (2017-06-30) • <a href="https://developers.google.com/terms/">Google Terms of Use</a> • <a href="https://google-developers.appspot.com/chart/interactive/docs/gallery/geochart">Documentation and Data Policy</a> </span>
+</div>
+</body>
+</html>
+<div id="looking-deeper-into-the-data-for-2008-the-mean-state-donations-ranged-from-420.82-to-931.00.-this-mean-range-was-the-largest-range-and-had-the-largest-values-as-a-whole.-there-was-a-trend-of-individuals-in-science-intensive-jobs-who-were-willing-to-contribute-larger-donations-to-be-located-in-the-west-mid-west-and-south-specifically-texas-area.-the-state-with-the-largest-contributors-on-average-for-this-year-was-indiana-with-a-high-of-931.00.-this-contrasted-with-the-other-years-in-that-there-was-an-increased-density-of-high-donation-means-in-the-west-whereas-the-other-years-did-not-exhibit-the-same-trend.-furthermore-the-state-with-the-highest-average-donation-was-indiana-while-oklahoma-rose-as-the-clear-winner-for-2012-and-2016-with-highest-donation-mean." class="section level3">
+<h3>Looking deeper into the data for 2008, the mean state donations ranged from $420.82 to $931.00. This mean range was the largest range and had the largest values as a whole. There was a trend of individuals in science intensive jobs who were willing to contribute larger donations to be located in the West, Mid-West, and South, specifically Texas area. The state with the largest contributors on average for this year was Indiana with a high of $931.00. This contrasted with the other years in that there was an increased density of high donation means in the west whereas the other years did not exhibit the same trend. Furthermore, the state with the highest average donation was Indiana while Oklahoma, rose as the clear winner for 2012 and 2016 with highest donation mean.</h3>
+<pre class="r"><code>Cycle2 &lt;- subset(SciFedGivingMod, cycle == &quot;2012&quot;)</code></pre>
+<pre class="r"><code>Cycle2[Cycle2 &lt; 0] &lt;-NA</code></pre>
+<pre><code>## Warning in Ops.factor(left, right): &#39;&lt;&#39; not meaningful for factors
+
+## Warning in Ops.factor(left, right): &#39;&lt;&#39; not meaningful for factors</code></pre>
+<pre class="r"><code>Cycle2[Cycle2==&quot;&quot;] &lt;-NA
+Cycle2 &lt;- na.omit(Cycle2)</code></pre>
+<pre class="r"><code>Cycle2=Cycle2%&gt;%group_by(state)%&gt;%summarize(Donation.Mean=mean(X2016_dollars))
+Cycle2$state[is.na(Cycle2$state)] &lt;- &quot;&quot;
+MeanDonations08 &lt;- Cycle2 %&gt;% filter(!state %in% c(&quot;ZZ&quot;, &quot;AA&quot;, &quot;&quot;,&quot;QC&quot;, &quot;PR&quot;,&quot;AE&quot;,&quot;AP&quot;,&quot;AS&quot;,&quot;GU&quot;,&quot;VI&quot;, &quot;DC&quot;))
+MeanDonations08</code></pre>
+<pre><code>## # A tibble: 50 x 2
+##     state Donation.Mean
+##    &lt;fctr&gt;         &lt;dbl&gt;
+##  1     AK      525.0530
+##  2     AL      515.9086
+##  3     AR      552.2669
+##  4     AZ      464.8698
+##  5     CA      550.4782
+##  6     CO      593.7697
+##  7     CT      551.4221
+##  8     DE      482.9379
+##  9     FL      591.9872
+## 10     GA      428.1601
+## # ... with 40 more rows</code></pre>
+<pre class="r"><code>MeanDonations08Chart2 &lt;- gvisGeoChart(MeanDonations08, &quot;state&quot;,&quot;Donation.Mean&quot;,
+options=list(region=&quot;US&quot;, displayMode=&quot;regions&quot;, resolution=&quot;provinces&quot;,
+width=600, height=400))
+MeanDonations08Chart2</code></pre>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>
+GeoChartID61e63ee633e
+</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<style type="text/css">
+body {
+  color: #444444;
+  font-family: Arial,Helvetica,sans-serif;
+  font-size: 75%;
+  }
+  a {
+  color: #4D87C7;
+  text-decoration: none;
+}
+</style>
+</head>
+<body>
+<p><!-- GeoChart generated in R 3.4.1 by googleVis 0.6.2 package --> <!-- Wed Dec 13 17:26:17 2017 --></p>
+<!-- jsHeader -->
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataGeoChartID61e63ee633e () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+"AK",
+525.0529822
+],
+[
+"AL",
+515.9085963
+],
+[
+"AR",
+552.266885
+],
+[
+"AZ",
+464.8698315
+],
+[
+"CA",
+550.4782068
+],
+[
+"CO",
+593.7697097
+],
+[
+"CT",
+551.4221177
+],
+[
+"DE",
+482.9378862
+],
+[
+"FL",
+591.9871691
+],
+[
+"GA",
+428.1600723
+],
+[
+"HI",
+759.6578473
+],
+[
+"IA",
+465.2560304
+],
+[
+"ID",
+493.4563309
+],
+[
+"IL",
+513.2565887
+],
+[
+"IN",
+576.8495047
+],
+[
+"KS",
+498.7591548
+],
+[
+"KY",
+876.2186517
+],
+[
+"LA",
+791.90858
+],
+[
+"MA",
+516.3622597
+],
+[
+"MD",
+550.2536565
+],
+[
+"ME",
+569.5919035
+],
+[
+"MI",
+636.8727203
+],
+[
+"MN",
+489.4125386
+],
+[
+"MO",
+511.7301952
+],
+[
+"MS",
+668.6503632
+],
+[
+"MT",
+610.8445021
+],
+[
+"NC",
+439.7547435
+],
+[
+"ND",
+683.827028
+],
+[
+"NE",
+451.9450743
+],
+[
+"NH",
+543.4088557
+],
+[
+"NJ",
+563.9684269
+],
+[
+"NM",
+496.3998875
+],
+[
+"NV",
+500.4750163
+],
+[
+"NY",
+560.0731441
+],
+[
+"OH",
+543.6692665
+],
+[
+"OK",
+877.7263997
+],
+[
+"OR",
+440.1965141
+],
+[
+"PA",
+574.4630072
+],
+[
+"RI",
+469.9047883
+],
+[
+"SC",
+564.3591478
+],
+[
+"SD",
+601.4012692
+],
+[
+"TN",
+543.9236734
+],
+[
+"TX",
+694.510579
+],
+[
+"UT",
+537.496041
+],
+[
+"VA",
+474.882147
+],
+[
+"VT",
+376.3174854
+],
+[
+"WA",
+543.4944507
+],
+[
+"WI",
+458.0170798
+],
+[
+"WV",
+863.0983439
+],
+[
+"WY",
+636.1921838
+] 
+];
+data.addColumn('string','state');
+data.addColumn('number','Donation.Mean');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartGeoChartID61e63ee633e() {
+var data = gvisDataGeoChartID61e63ee633e();
+var options = {};
+options["width"] = 600;
+options["height"] = 400;
+options["region"] = "US";
+options["displayMode"] = "regions";
+options["resolution"] = "provinces";
+
+    var chart = new google.visualization.GeoChart(
+    document.getElementById('GeoChartID61e63ee633e')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "geochart";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartGeoChartID61e63ee633e);
+})();
+function displayChartGeoChartID61e63ee633e() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+<!-- jsChart -->
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartGeoChartID61e63ee633e"></script>
+<!-- divChart -->
+<div id="GeoChartID61e63ee633e" style="width: 600; height: 400;">
+
+</div>
+<div>
+<span>Data: MeanDonations08 • Chart ID: <a href="Chart_GeoChartID61e63ee633e.html">GeoChartID61e63ee633e</a> • <a href="https://github.com/mages/googleVis">googleVis-0.6.2</a></span><br /> <!-- htmlFooter --> <span> R version 3.4.1 (2017-06-30) • <a href="https://developers.google.com/terms/">Google Terms of Use</a> • <a href="https://google-developers.appspot.com/chart/interactive/docs/gallery/geochart">Documentation and Data Policy</a> </span>
+</div>
+</body>
+</html>
+</div>
+<div id="for-the-2012-year-the-range-in-donation-means-are-376.32-to-877.73-already-we-see-a-drop-in-mean-donation-amounts.-for-this-cycle-the-majority-of-high-donation-means-being-centralized-in-the-midwest-and-south-not-the-west-as-seen-in-the-previous-data-set.-it-was-interesting-to-note-that-in-2008-indiana-was-the-highest-donation-mean-contributor-for-individuals-in-science-intensive-jobs-but-know-ranks-on-the-bottom-half-of-the-scale.-the-emerging-leader-in-mean-donations-is-oklahoma-which-is-located-toward-the-bottom-half-of-the-country-near-texas." class="section level3">
+<h3>For the 2012 year, the range in donation means are $376.32 to $877.73, already we see a drop in mean donation amounts. For this cycle the majority of high donation means being centralized in the Midwest and South, not the west as seen in the previous data set. It was interesting to note that in 2008 Indiana was the highest donation mean contributor for individuals in science intensive jobs but know ranks on the bottom half of the scale. The emerging leader in mean donations is Oklahoma which is located toward the bottom half of the country near Texas.</h3>
+<pre class="r"><code>Cycle3 &lt;- subset(SciFedGivingMod, cycle == &quot;2016&quot;)</code></pre>
+<pre class="r"><code>Cycle3[Cycle3 &lt; 0] &lt;-NA</code></pre>
+<pre><code>## Warning in Ops.factor(left, right): &#39;&lt;&#39; not meaningful for factors
+
+## Warning in Ops.factor(left, right): &#39;&lt;&#39; not meaningful for factors</code></pre>
+<pre class="r"><code>Cycle3[Cycle3==&quot;&quot;] &lt;-NA
+Cycle3 &lt;- na.omit(Cycle3)</code></pre>
+<pre class="r"><code>Cycle3=Cycle3%&gt;%group_by(state)%&gt;%summarize(Donation.Mean=mean(X2016_dollars))
+Cycle3$state[is.na(Cycle3$state)] &lt;- &quot;&quot;
+MeanDonations08 &lt;- Cycle3 %&gt;% filter(!state %in% c(&quot;ZZ&quot;, &quot;AA&quot;, &quot;&quot;,&quot;QC&quot;, &quot;PR&quot;,&quot;AE&quot;,&quot;AP&quot;,&quot;AS&quot;,&quot;GU&quot;,&quot;VI&quot;, &quot;DC&quot;))
+MeanDonations08</code></pre>
+<pre><code>## # A tibble: 51 x 2
+##     state Donation.Mean
+##    &lt;fctr&gt;         &lt;dbl&gt;
+##  1      1     133.84800
+##  2     AK      95.65839
+##  3     AL     130.96427
+##  4     AR     128.34905
+##  5     AZ      96.34240
+##  6     CA     130.91764
+##  7     CO     117.46363
+##  8     CT     102.24012
+##  9     DE      94.38494
+## 10     FL     155.95311
+## # ... with 41 more rows</code></pre>
+<pre class="r"><code>MeanDonations08Chart3 &lt;- gvisGeoChart(MeanDonations08, &quot;state&quot;,&quot;Donation.Mean&quot;,
+options=list(region=&quot;US&quot;, displayMode=&quot;regions&quot;, resolution=&quot;provinces&quot;,
+width=600, height=400))
+MeanDonations08Chart3</code></pre>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>
+GeoChartID61e541b2cbb
+</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<style type="text/css">
+body {
+  color: #444444;
+  font-family: Arial,Helvetica,sans-serif;
+  font-size: 75%;
+  }
+  a {
+  color: #4D87C7;
+  text-decoration: none;
+}
+</style>
+</head>
+<body>
+<p><!-- GeoChart generated in R 3.4.1 by googleVis 0.6.2 package --> <!-- Wed Dec 13 17:26:18 2017 --></p>
+<!-- jsHeader -->
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataGeoChartID61e541b2cbb () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+"1",
+133.848
+],
+[
+"AK",
+95.65838785
+],
+[
+"AL",
+130.9642721
+],
+[
+"AR",
+128.3490504
+],
+[
+"AZ",
+96.34239533
+],
+[
+"CA",
+130.9176399
+],
+[
+"CO",
+117.4636332
+],
+[
+"CT",
+102.2401173
+],
+[
+"DE",
+94.38494101
+],
+[
+"FL",
+155.9531051
+],
+[
+"GA",
+108.7222526
+],
+[
+"HI",
+184.6568941
+],
+[
+"IA",
+98.54081409
+],
+[
+"ID",
+97.2213697
+],
+[
+"IL",
+115.7261635
+],
+[
+"IN",
+155.618491
+],
+[
+"KS",
+99.99207674
+],
+[
+"KY",
+221.2344371
+],
+[
+"LA",
+396.339174
+],
+[
+"MA",
+112.3071436
+],
+[
+"MD",
+124.1423013
+],
+[
+"ME",
+83.06322016
+],
+[
+"MI",
+107.398275
+],
+[
+"MN",
+76.91663315
+],
+[
+"MO",
+93.58919786
+],
+[
+"MS",
+155.3484204
+],
+[
+"MT",
+153.7580667
+],
+[
+"NC",
+101.1296595
+],
+[
+"ND",
+166.0031143
+],
+[
+"NE",
+70.09741091
+],
+[
+"NH",
+99.22003879
+],
+[
+"NJ",
+132.3792267
+],
+[
+"NM",
+124.4891544
+],
+[
+"NV",
+120.3216924
+],
+[
+"NY",
+113.5757446
+],
+[
+"OH",
+120.9376224
+],
+[
+"OK",
+402.4326357
+],
+[
+"OR",
+74.38266278
+],
+[
+"PA",
+124.0241443
+],
+[
+"RI",
+63.108179
+],
+[
+"SC",
+131.4396381
+],
+[
+"SD",
+133.1443176
+],
+[
+"TN",
+124.6858597
+],
+[
+"TX",
+172.971821
+],
+[
+"UT",
+90.17549097
+],
+[
+"VA",
+110.3080007
+],
+[
+"VT",
+62.64231473
+],
+[
+"WA",
+117.9307541
+],
+[
+"WI",
+121.1170999
+],
+[
+"WV",
+104.0681396
+],
+[
+"WY",
+164.9638258
+] 
+];
+data.addColumn('string','state');
+data.addColumn('number','Donation.Mean');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartGeoChartID61e541b2cbb() {
+var data = gvisDataGeoChartID61e541b2cbb();
+var options = {};
+options["width"] = 600;
+options["height"] = 400;
+options["region"] = "US";
+options["displayMode"] = "regions";
+options["resolution"] = "provinces";
+
+    var chart = new google.visualization.GeoChart(
+    document.getElementById('GeoChartID61e541b2cbb')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "geochart";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartGeoChartID61e541b2cbb);
+})();
+function displayChartGeoChartID61e541b2cbb() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+<!-- jsChart -->
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartGeoChartID61e541b2cbb"></script>
+<!-- divChart -->
+<div id="GeoChartID61e541b2cbb" style="width: 600; height: 400;">
+
+</div>
+<div>
+<span>Data: MeanDonations08 • Chart ID: <a href="Chart_GeoChartID61e541b2cbb.html">GeoChartID61e541b2cbb</a> • <a href="https://github.com/mages/googleVis">googleVis-0.6.2</a></span><br /> <!-- htmlFooter --> <span> R version 3.4.1 (2017-06-30) • <a href="https://developers.google.com/terms/">Google Terms of Use</a> • <a href="https://google-developers.appspot.com/chart/interactive/docs/gallery/geochart">Documentation and Data Policy</a> </span>
+</div>
+</body>
+</html>
+</div>
+<div id="presented-the-lowest-mean-donation-amount-of-62.64-in-vermont.-the-highest-donation-mean-was-402.43-in-oklahoma-the-same-as-the-2012-cycle.-this-data-set-also-followed-the-same-trend-of-being-concentrated-in-the-mainly-in-the-south-and-a-little-in-the-mid-west-kentucky-specifically.-we-can-attest-the-lower-values-here-most-likely-to-the-lack-of-data-values-with-potential-to-be-larger-being-that-this-cycle-included-only-data-from-2016-rather-than-a-range-of-years-as-seen-in-cycle-1-and-cycle-2." class="section level3">
+<h3>2016 presented the lowest mean donation amount of $62.64 in Vermont. The highest donation mean was $402.43 in Oklahoma, the same as the 2012 cycle. This data set also followed the same trend of being concentrated in the mainly in the South and a little in the Mid-West, Kentucky specifically. We can attest the lower values here most likely to the lack of data values with potential to be larger being that this cycle included only data from 2016 rather than a range of years as seen in cycle 1 and cycle 2.</h3>
+</div>
+</div>
+<div id="are-there-differences-in-donation-patterns-across-the-three-types-of-classifications---engineermath-statscientist---across-different-years-for-house-senate-and-presidential-elections-across-different-years." class="section level2">
+<h2>2. Are there differences in donation patterns across the three types of classifications - Engineer/Math-Stat/Scientist - across different years for house, senate, and presidential elections, across different years.</h2>
+<div id="subset-for-engineering" class="section level3">
+<h3>Subset for Engineering</h3>
+<div id="the-following-steps-taken-to-isolate-datasets-are-replicated-below-for-each-occuapation-type" class="section level6">
+<h6>(The following steps taken to isolate datasets are replicated below for each occuapation type)</h6>
+<pre class="r"><code>Engineering &lt;- science_federal_giving[,-c(1,2,4:20,22,24,26:31)]</code></pre>
+<pre class="r"><code>EngineerIsolation &lt;- subset(Engineering, classification == &quot;Engineer&quot;)</code></pre>
+<pre class="r"><code>names(EngineerIsolation)[1]=&quot;Party&quot;
+names(EngineerIsolation)[4]=&quot;Donation&quot;</code></pre>
+<pre class="r"><code>Eng08 &lt;- subset(EngineerIsolation, cycle == &quot;2008&quot;)</code></pre>
+<pre class="r"><code>Eng12 &lt;- subset(EngineerIsolation, cycle == &quot;2012&quot;)</code></pre>
+<pre class="r"><code>Eng16 &lt;- subset(EngineerIsolation, cycle == &quot;2016&quot;)</code></pre>
+</div>
+</div>
+<div id="combining-datasets-for-engineering-from-cycles-081216-to-make-a-final-dataset" class="section level3">
+<h3>Combining datasets for engineering from cycles 08,12,16 to make a final dataset</h3>
+<pre class="r"><code>EngYears &lt;- rbind(Eng08,Eng12,Eng16)</code></pre>
+</div>
+<div id="finding-mean-donations" class="section level3">
+<h3>Finding mean donations</h3>
+<pre class="r"><code>EngFinal=EngYears%&gt;%group_by(cycle,Party)%&gt;%summarize(mean =mean(Donation))
+EngFinal &lt;- EngFinal[-c(4,5,9,10,14,15),]</code></pre>
+</div>
+<div id="plotting-mean-donation" class="section level3">
+<h3>Plotting mean donation</h3>
+<pre class="r"><code>EngFinalPlot &lt;- ggplot(data = EngFinal, aes(x=reorder(cycle, mean),y=mean, fill=as.factor(Party))) + geom_bar(stat=&quot;identity&quot;, alpha=.60) + coord_flip()+ labs(list(title = &quot;Mean Donations from Engineers by Cycle Year and Committee Type&quot;, x = &quot;Cycle Year&quot;, y = &quot;Mean 2016 dollars&quot;))
+
+
+EngFinalPlot</code></pre>
+<p><img src="FinalProject_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+</div>
+<div id="the-graph-above-is-a-stacked-bar-chart-based-off-data-from-donations-by-engineering-occupations.-the-graph-is-stratified-by-cycle-year-and-committe-type-e.g.house-presedential-and-senate.-this-graph-shows-that-in-2008-the-total-amount-of-donations-from-engineers-occupation-was-over-2000.-further-it-shows-that-house-and-senate-elections-both-brought-in-a-mean-of-around-750-each-while-presedential-had-approximately-a-mean-of-550.-in-2012-and-2016-the-elections-the-total-mean-amount-of-donatins-from-engineering-occupations-was-just-over-1750-and-about-750-for-2016.-all-bars-from-all-three-election-cycles-show-that-house-elections-had-the-highest-mean-donation-from-the-engineering-occupation-the-senate-election-had-the-second-highest-donation-mean-and-the-presediential-had-the-lowest-mean-donation." class="section level3">
+<h3>The graph above is a stacked bar chart based off data from donations by engineering occupations. The graph is stratified by cycle year, and committe type (e.g. House, Presedential, and Senate). This graph shows that in 2008 the total amount of donations from engineers occupation was over $2000. Further, it shows that House and Senate elections both brought in a mean of around $750 each while Presedential had approximately a mean of $550. in 2012 and 2016 the elections the total mean amount of donatins from engineering occupations was just over $1750 and about $750 for 2016. All bars from all three election cycles show that House elections had the highest mean donation from the engineering occupation, the Senate election had the second highest donation mean, and the Presediential had the lowest mean donation.</h3>
+</div>
+<div id="math-stats" class="section level3">
+<h3>Math-Stats</h3>
+<pre class="r"><code>MathStats &lt;- science_federal_giving[,-c(1,2,4:20,22,24,26:31)]</code></pre>
+<pre class="r"><code>MathStatsIsolation &lt;- subset(MathStats, classification == &quot;Math-Stat&quot;)</code></pre>
+<pre class="r"><code>names(MathStatsIsolation)[1]=&quot;Party&quot;
+names(MathStatsIsolation)[4]=&quot;Donation&quot;</code></pre>
+<pre class="r"><code>Math08 &lt;- subset(MathStatsIsolation, cycle == &quot;2008&quot;)</code></pre>
+<pre class="r"><code>Math12 &lt;- subset(MathStatsIsolation, cycle == &quot;2012&quot;)</code></pre>
+<pre class="r"><code>Math16 &lt;- subset(MathStatsIsolation, cycle == &quot;2016&quot;)</code></pre>
+<pre class="r"><code>MathYears &lt;- rbind(Math08,Math12,Math16)</code></pre>
+<pre class="r"><code>MathFinal=MathYears%&gt;%group_by(cycle,Party)%&gt;%summarize(mean =mean(Donation))
+MathFinal &lt;- MathFinal[-c(4,5,9,13,14),]</code></pre>
+<pre class="r"><code>MathFinalPlot &lt;- ggplot(data = MathFinal, aes(x=reorder(cycle, mean),y=mean, fill=as.factor(Party))) + geom_bar(stat=&quot;identity&quot;, alpha=.60) + coord_flip()+ labs(list(title = &quot;Mean Donations from Math-Stats Occuations by Cycle Year and Committee Type&quot;, x = &quot;Cycle Year&quot;, y = &quot;Mean 2016 dollars&quot;))
+
+
+MathFinalPlot</code></pre>
+<p><img src="FinalProject_files/figure-html/unnamed-chunk-34-1.png" width="672" /></p>
+</div>
+<div id="the-graph-above-is-stratified-the-same-way-as-the-first-graph-however-it-is-isolated-by-the-math-stats-occupation.-this-graph-shows-the-same-trend-for-total-mean-donation-for-each-election-year-showing-that-it-is-highest-for-2008-and-lowest-for-2016.-however-this-graph-shows-a-more-equal-spread-of-donations-per-commitee-type-per-year.-for-the-2008-cycle-the-mean-donations-are-all-about-500-600-for-2012-they-are-all-around-500-and-for-the-2016-cycle-all-donatinos-are-all-around-100-200.-so-no-committee-type-received-vastly-more-donatinos-by-the-math-stats-occupations-than-another-committee-type.-one-thing-to-note-is-that-the-scale-for-this-particular-graph-is-smaller-than-the-others.-this-is-due-to-a-smaller-total-mean-donation-across-all-cycle-years-for-math-stats-occupations.-the-highest-total-mean-which-was-in-the-2008-cycle-was-above-1500-but-below-2000-whereas-the-other-graphs-have-highest-total-means-that-are-above-2000.-thus-on-average-the-math-stats-occupations-donates-less-then-engineers-and-scienctist." class="section level3">
+<h3>The graph above is stratified the same way as the first graph however it is isolated by the math-stats occupation. This graph shows the same trend for total mean donation for each election year, showing that it is highest for 2008 and lowest for 2016. However, this graph shows a more equal spread of donations per commitee type per year. For the 2008 cycle the mean donations are all about $500-600, for 2012 they are all around $500, and for the 2016 cycle all donatinos are all around $100-200. So, no committee type received vastly more donatinos by the math-stats occupations than another committee type. One thing to note is that the scale for this particular graph is smaller than the others. This is due to a smaller total mean donation across all cycle years for math-stats occupations. The highest total mean which was in the 2008 cycle was above $1500 but below $2000 whereas the other graphs have highest total means that are above $2000. Thus, on average the math-stats occupations donates less then Engineers and Scienctist.</h3>
+</div>
+<div id="science" class="section level3">
+<h3>Science</h3>
+<pre class="r"><code>Science &lt;- science_federal_giving[,-c(1,2,4:20,22,24,26:31)]</code></pre>
+<pre class="r"><code>ScienceIsolation &lt;- subset(Science, classification == &quot;Scientist&quot;)</code></pre>
+<pre class="r"><code>names(ScienceIsolation)[1]=&quot;Party&quot;
+names(ScienceIsolation)[4]=&quot;Donation&quot;</code></pre>
+<pre class="r"><code>Science08 &lt;- subset(ScienceIsolation, cycle == &quot;2008&quot;)</code></pre>
+<pre class="r"><code>Science12 &lt;- subset(ScienceIsolation, cycle == &quot;2012&quot;)</code></pre>
+<pre class="r"><code>Science16 &lt;- subset(ScienceIsolation, cycle == &quot;2016&quot;)</code></pre>
+<pre class="r"><code>ScienceYears &lt;- rbind(Science08,Science12,Science16)</code></pre>
+<pre class="r"><code>ScienceFinal=ScienceYears%&gt;%group_by(cycle,Party)%&gt;%summarize(mean =mean(Donation))
+ScienceFinal &lt;- ScienceFinal[-c(4,5,9,10,14,15),]</code></pre>
+<pre class="r"><code>ScienceFinalPlot &lt;- ggplot(data = ScienceFinal, aes(x=reorder(cycle, mean),y=mean, fill=as.factor(Party))) + geom_bar(stat=&quot;identity&quot;, alpha=.60) + coord_flip()+ labs(list(title = &quot;Mean Donations from Scientists by Cycle Year and Committee Type&quot;, x = &quot;Cycle Year&quot;, y = &quot;Mean 2016 dollars&quot;))
+
+
+ScienceFinalPlot</code></pre>
+<p><img src="FinalProject_files/figure-html/unnamed-chunk-43-1.png" width="672" /></p>
+</div>
+<div id="again-the-graph-above-is-stratified-the-same-as-the-first-two-graphs-but-is-isolated-by-the-scienctist-occupation.-it-also-shows-the-same-trend-of-highest-total-mean-donation-in-2008-and-lowest-in-2016.-the-highest-total-mean-donation-is-for-the-2008-cycle-and-is-just-under-2000-which-is-in-betwen-the-math-stats-occupations-and-the-engineering-ocupations.-thus-scientists-fill-in-the-middle-for-mean-donatino-amount-between-the-three-occupation-types.-this-graph-also-shows-that-the-mean-donations-for-house-and-senate-elections-are-higher-than-presedential-elections.-however-the-mean-donations-between-house-and-senetale-elecitons-are-somewhat-even-for-each-cycle-year.-seeing-the-common-trends-between-all-three-graphs-poses-a-question-for-further-investigation-why-does-the-presedential-election-get-the-smallest-mean-donation-amount" class="section level3">
+<h3>Again, the graph above is stratified the same as the first two graphs but is isolated by the scienctist occupation. It also shows the same trend of highest total mean donation in 2008 and lowest in 2016. The highest total mean donation is for the 2008 cycle and is just under $2000 which is in betwen the math-stats occupations and the engineering ocupations. Thus, scientists fill in the middle for mean donatino amount between the three occupation types. This graph also shows that the mean donations for House and Senate elections are higher than Presedential elections. However, the mean donations between House and Senetale elecitons are somewhat even for each cycle year. Seeing the common trends between all three graphs poses a question for further investigation: Why does the presedential election get the smallest mean donation amount?</h3>
+</div>
+</div>
+<div id="limitations-of-the-data" class="section level2">
+<h2>Limitations of the Data</h2>
+<div id="in-analyzing-the-data-there-were-a-lot-of-limitaations-and-edits-one-should-keep-in-mind.-first-was-that-in-question-one-we-filtered-out-a-lot-of-donation-values.-while-tiddying-the-data-we-found-that-there-were-many-negative-values-which-skewed-our-data-and-did-not-provide-an-accurate-depiction-of-average-doantion-amounts-recieved-becuase-the-data-was-about-100.00-lower-due-to-the-negitive-values-factoring-in.-additionally-we-made-it-a-point-to-keep-any-zero-amounts-as-they-alluded-to-any-individual-who-did-not-support-the-canidate.-these-zero-values-are-indicative-of-someone-within-the-intensive-science-jobs-who-did-not-support-the-a-candidate-going-against-the-growing-trend-of-science-intensive-individuals-growing-support-in-the-political-environment.-what-would-be-interesting-to-dive-deeper-would-be-to-look-specifically-as-the-individuals-who-did-not-donate-and-see-which-science-discipline-were-not-willing-to-donate-or-look-deeper-into-each-party-and-see-who-was-not-willing-to-donate-to-them-specifically." class="section level3">
+<h3>In analyzing the data, there were a lot of limitaations and edits one should keep in mind. First was that in question one, we filtered out a lot of donation values. While tiddying the data we found that there were many negative values which skewed our data and did not provide an accurate depiction of average doantion amounts recieved becuase the data was about $100.00 lower due to the negitive values factoring in. Additionally, we made it a point to keep any zero amounts as they alluded to any individual who did not support the canidate. These zero values are indicative of someone within the intensive science jobs who did not support the a candidate, going against the growing trend of science intensive individuals’ growing support in the political environment. What would be interesting to dive deeper would be to look specifically as the individuals who did not donate and see which science discipline were not willing to donate, or look deeper into each party and see who was not willing to donate to them specifically.</h3>
+</div>
+<div id="while-analyzing-the-results-of-questions-number-two-it-was-interesting-to-note-the-lower-means-for-the-cycle-year-2016-.-while-splitting-up-and-subsetting-the-data-we-broke-up-the-donation-into-ranges-of-years-which-had-a-negative-effect-on-2016-being-that-we-are-still-in-2017-thus-cannot-draw-data-from-this-year-and-integrate-it-into-our-current-data-sets.-this-poses-a-limit-to-our-data-because-the-values-are-slightly-skewed-because-of-less-data-values-to-draw-from.-as-someone-interested-in-furthering-this-study-it-would-be-interesting-to-analyze-the-growth-in-donation-means-for-the-2016-cycle-as-ore-data-comesup-that-can-be-integrated-in.-another-option-could-be-to-splice-the-data-even-smaller-so-that-we-were-not-looking-at-a-range-of-values-but-instead-year-by-year-analysis." class="section level3">
+<h3>While analyzing the results of questions number two, it was interesting to note the lower means for the Cycle Year 2016 . While splitting up and subsetting the data we broke up the donation into ranges of years which had a negative effect on 2016 being that we are still in 2017 thus, cannot draw data from this year and integrate it into our current data sets. This poses a limit to our data because the values are slightly skewed because of less data values to draw from. As someone interested in furthering this study, it would be interesting to analyze the growth in donation means for the 2016 cycle as ore data comesup that can be integrated in. Another option could be to splice the data even smaller so that we were not looking at a range of values but instead, year by year analysis.</h3>
+</div>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<div id="our-analysis-explored-the-willingness-of-individuals-with-scientific-intensive-jobs-to-donate-to-political-campaign-of-different-sorts-and-by-different-states.-our-approach-was-twofold-first-look-specifically-at-states-and-then-to-examine-specific-disciplines-as-they-related-to-different-political-elections." class="section level3">
+<h3>Our analysis explored the willingness of individuals with Scientific intensive jobs to donate to political campaign of different sorts and by different states. Our approach was twofold, first look specifically at states and then to examine specific disciplines as they related to different political elections.</h3>
+</div>
+<div id="approaching-the-data-specific-to-states-we-saw-a-trend-for-the-data-to-be-concentrated-in-the-south-mid-west-and-west-year-over-year.-the-donations-were-examined-by-average-and-we-compared-the-averages-of-different-states-to-draw-out-common-themes-of-donations-in-each-state.-the-largest-range-was-in-2008-with-an-average-donation-range-per-state-being-420.82-to-931.73.-this-was-also-the-highest-average-range.-the-lowest-average-range-occurred-in-2016.-here-the-average-donations-ranged-from-62.64--402.43-per-individual-with-a-science-intensive-job." class="section level3">
+<h3>Approaching the data specific to states, we saw a trend for the data to be concentrated in the South, Mid-West and West year over year. The donations were examined by average and we compared the averages of different states to draw out common themes of donations in each state. The largest range was in 2008 with an average donation range per state being $420.82 to $931.73. This was also the highest average range. The lowest average range occurred in 2016. Here, the average donations ranged from $62.64- $402.43 per individual with a science intensive job.</h3>
+</div>
+<div id="taking-the-data-one-step-further-we-looked-into-the-individuals-within-the-categories-of-math--stat-engineering-and-scientific.-engineers-on-average-were-likely-to-give-the-highest-donation-while-math-stats-were-the-lowest-with-scientist-being-somewhere-in-between.-we-broke-this-up-further-by-political-election-they-were-donating-to.-it-seemed-that-individuals-in-these-field-were-most-likely-to-either-the-house-or-senate.-both-yielded-similar-average-donations-but-presidential-campaigns-came-out-as-a-clear-bottom-for-donations-contributed-by-engineers-math-stats-and-scientist." class="section level3">
+<h3>Taking the data one step further, we looked into the individuals within the categories of math- stat, engineering and scientific. Engineers on average were likely to give the highest donation while math stats were the lowest with scientist being somewhere in between. We broke this up further by political election they were donating to. It seemed that individuals in these field were most likely to either the House or Senate. Both yielded similar average donations but, presidential campaigns came out as a clear bottom for donations contributed by engineers, math stats, and scientist.</h3>
+</div>
+<div id="this-data-is-an-invaluable-source-for-politicians-running-election-campaigns-who-might-be-interested-in-targeting-their-audience-to-science-intensive-individuals.-the-charts-evaluated-group-behaviors-toward-supporting-different-political-causes-which-is-helpful-in-decided-to-who-and-where-one-would-achieve-the-highest-donation-for-their-campaign.-the-targeted-audience-for-a-campaign-that-can-be-built-by-this-data-would-allow-a-politician-to-use-their-time-and-energy-most-effectively-to-gain-the-most-bang-for-their-buck." class="section level3">
+<h3>This data is an invaluable source for politicians running election campaigns who might be interested in targeting their audience to science intensive individuals. The charts evaluated group behaviors toward supporting different political causes which is helpful in decided to who and where one would achieve the highest donation for their campaign. The targeted audience for a campaign that can be built by this data would allow a politician to use their time and energy most effectively to gain the most bang for their buck.</h3>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
